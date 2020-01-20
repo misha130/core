@@ -11,6 +11,6 @@ namespace Codidact.Application.Common.Interfaces
         DbSet<TrustLevel> TrustLevels { get; set; }
         DbSet<Community> Communities { get; set; }
 
-        Task<int> SaveChangesAsync(CancellationToken cancellationToken);
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

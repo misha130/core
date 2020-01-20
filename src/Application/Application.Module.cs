@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using AutoMapper;
+using Codidact.Application.Members;
+using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
 namespace Codidact.Application
 {
@@ -14,6 +17,10 @@ namespace Codidact.Application
         /// <returns></returns>
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+            services.AddTransient<IMemberRepository, MemberRepository>();
+
             return services;
         }
 
