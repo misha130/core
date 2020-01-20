@@ -1,4 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
+using MediatR;
+using AutoMapper;
 
 namespace Codidact.Application
 {
@@ -14,6 +17,8 @@ namespace Codidact.Application
         /// <returns></returns>
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            services.AddMediatR(Assembly.GetExecutingAssembly());
             return services;
         }
 
