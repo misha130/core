@@ -3,19 +3,25 @@ using Codidact.Domain.Common;
 using Codidact.Domain.Common.Interfaces;
 using Codidact.Domain.Entities;
 using Codidact.Domain.Extensions;
+using Codidact.Infrastructure.Identity;
+using IdentityServer4.EntityFramework.Options;
+using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Codidact.Infrastructure.Persistence
+namespace Codidact.Infrastructure.Application.Persistence
 {
-    public class ApplicationDbContext : DbContext, IApplicationDbContext
+    public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>, IApplicationDbContext
     {
-        public ApplicationDbContext(DbContextOptions options)
-            : base(options) { }
+        public ApplicationDbContext(
+            DbContextOptions options,
+            IOptions<OperationalStoreOptions> operationalStoreOptions
+            ) : base(options, operationalStoreOptions) { }
 
         public DbSet<Member> Members { get; set; }
         public DbSet<Community> Communities { get; set; }

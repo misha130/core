@@ -3,7 +3,7 @@ using Codidact.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Codidact.Infrastructure.Persistence.Configuration
+namespace Codidact.Infrastructure.Persistence.Application.Configuration
 {
     public class CommunityConfiguration : IEntityTypeConfiguration<Community>
     {

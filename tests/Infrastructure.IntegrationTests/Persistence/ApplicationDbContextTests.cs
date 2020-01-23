@@ -2,20 +2,31 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Codidact.Domain.Entities;
-using Codidact.Infrastructure.Persistence;
+using Codidact.Infrastructure.Application.Persistence;
+using IdentityServer4.EntityFramework.Options;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Xunit;
 
 namespace Infrastructure.IntegrationTests.Persistence
 {
     public class ApplicationDbContextTests
     {
-        private readonly ApplicationDbContext _sutContext
-            = new ApplicationDbContext(
-                new DbContextOptionsBuilder<ApplicationDbContext>()
+        private readonly ApplicationDbContext _sutContext;
+
+        public ApplicationDbContextTests()
+        {
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
                 .UseInMemoryDatabase(Guid.NewGuid().ToString())
-                .Options
-                );
+                .Options;
+
+            var operationalStoreOptions = Options.Create(new OperationalStoreOptions
+            {
+                DeviceFlowCodes = new TableConfiguration("DeviceCodes"),
+                PersistedGrants = new TableConfiguration("PersistedGrants")
+            });
+            _sutContext = new ApplicationDbContext(options, operationalStoreOptions);
+        }
 
         [Fact]
         public async Task SaveChangesShouldAssignAnAutoIncrementId()

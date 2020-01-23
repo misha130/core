@@ -1,5 +1,5 @@
 ﻿using Codidact.Application.Common.Interfaces;
-using Codidact.Infrastructure.Persistence;
+using Codidact.Infrastructure.Application.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

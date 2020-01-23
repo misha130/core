@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Codidact.Infrastructure.Persistence.Migrations
+namespace Codidact.Infrastructure.Persistence.Application.Migrations
 {
     public partial class RenameDatesMemberCommunityTrustLevel : Migration
     {

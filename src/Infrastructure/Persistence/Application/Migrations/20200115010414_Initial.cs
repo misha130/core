@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace Codidact.Infrastructure.Persistence.Migrations
+namespace Codidact.Infrastructure.Persistence.Application.Migrations
 {
     public partial class Initial : Migration
     {

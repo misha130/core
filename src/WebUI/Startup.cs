@@ -1,6 +1,6 @@
 using Codidact.Application;
 using Codidact.Infrastructure;
-using Codidact.Infrastructure.Persistence;
+using Codidact.Infrastructure.Application.Persistence;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Codidact.WebUI
 {
@@ -25,9 +26,12 @@ namespace Codidact.WebUI
         {
             services.AddApplication();
             services.AddInfrastructure(Configuration);
+
             services
                 .AddControllersWithViews()
                 .AddRazorRuntimeCompilation();
+
+            JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

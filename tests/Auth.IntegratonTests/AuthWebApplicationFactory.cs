@@ -1,7 +1,10 @@
-﻿using Codidact.Application.Common.Interfaces;
+using Codidact.Application.Common.Interfaces;
+using Codidact.Auth;
 using Codidact.Domain.Entities;
 using Codidact.Infrastructure.Application.Persistence;
+using Codidact.Infrastructure.Identity;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,13 +12,9 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 
-namespace Codidact.WebUI.IntegrationTests
+namespace Auth.IntegratonTests
 {
-    /// <summary>
-    /// This factory creates an .net Core server with the configuration provided
-    /// for the purpose of testing against it
-    /// </summary>
-    public class CustomWebApplicationFactory<TStartup> : WebApplicationFactory<TStartup> where TStartup : class
+    public class AuthWebApplicationFactory<TStartup> : WebApplicationFactory<Startup> where TStartup : class
     {
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
@@ -49,15 +48,16 @@ namespace Codidact.WebUI.IntegrationTests
                     using var scope = sp.CreateScope();
                     var scopedServices = scope.ServiceProvider;
                     var context = scopedServices.GetRequiredService<ApplicationDbContext>();
-                    var logger = scopedServices.GetRequiredService<ILogger<CustomWebApplicationFactory<TStartup>>>();
+                    var logger = scopedServices.GetRequiredService<ILogger<AuthWebApplicationFactory<TStartup>>>();
+                    var userManager = scopedServices.GetRequiredService<UserManager<ApplicationUser>>();
 
                     // Ensure the database is created.
                     context.Database.EnsureCreated();
 
                     try
                     {
-                        // Seed the database with test data.
-                        InitializeDbForTests(context);
+                        // Seed user management for tests.
+                        InitializeIdentitiesForTests(userManager);
                     }
                     catch (Exception ex)
                     {
@@ -68,23 +68,15 @@ namespace Codidact.WebUI.IntegrationTests
                 .UseEnvironment("Test");
         }
 
-        public static void InitializeDbForTests(ApplicationDbContext context)
+        public static void InitializeIdentitiesForTests(UserManager<ApplicationUser> userManager)
         {
-            // Communities
-            context.Communities.AddRange(new Community
+            var user = userManager.CreateAsync(new ApplicationUser
             {
-                Id = 1,
-                Name = "Code"
-            });
-
-            // Members
-            context.Members.AddRange(
-                new Member { Id = 1, DisplayName = "John Doe", Email = "john@gmail.com" },
-                new Member { Id = 2, DisplayName = "Haneen Kayle", Email = "haneen@gmail.com" },
-                new Member { Id = 3, DisplayName = "Olaf Grechkovich", Email = "olaf@gmail.com" }
-            );
-
-            context.SaveChanges();
+                Email = "john.doe@.com",
+                UserName = "johndoe",
+                EmailConfirmed = true,
+            }, "password");
+            user.GetAwaiter().GetResult();
         }
     }
 }
