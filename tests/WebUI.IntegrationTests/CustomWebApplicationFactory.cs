@@ -1,6 +1,6 @@
 ﻿using Codidact.Application.Common.Interfaces;
 using Codidact.Domain.Entities;
-using Codidact.Infrastructure.Application.Persistence;
+using Codidact.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;

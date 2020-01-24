@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Persistence\Identity\" />
+    <Folder Include="Persistence\Application\" />
   </ItemGroup>
 
 </Project>

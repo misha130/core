@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Codidact.Domain.Entities;
-using Codidact.Infrastructure.Application.Persistence;
+using Codidact.Infrastructure.Persistence;
 using IdentityServer4.EntityFramework.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;

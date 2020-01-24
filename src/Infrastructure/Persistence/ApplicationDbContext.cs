@@ -14,14 +14,20 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Codidact.Infrastructure.Application.Persistence
+namespace Codidact.Infrastructure.Persistence
 {
     public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>, IApplicationDbContext
     {
+        private readonly ICurrentUserService _currentUserService;
+
         public ApplicationDbContext(
-            DbContextOptions options,
-            IOptions<OperationalStoreOptions> operationalStoreOptions
-            ) : base(options, operationalStoreOptions) { }
+                DbContextOptions options,
+                IOptions<OperationalStoreOptions> operationalStoreOptions,
+                ICurrentUserService currentUserService
+            ) : base(options, operationalStoreOptions)
+        {
+            _currentUserService = currentUserService;
+        }
 
         public DbSet<Member> Members { get; set; }
         public DbSet<Community> Communities { get; set; }
@@ -36,13 +42,11 @@ namespace Codidact.Infrastructure.Application.Persistence
                 {
                     case EntityState.Added:
                         entry.Entity.CreateDateAt = DateTime.UtcNow;
-                        // TODO: Once an identity service is added 
-                        // set the current Member id to CreatedByMemberId
+                        entry.Entity.CreatedByMemberId = _currentUserService.MemberId;
                         break;
                     case EntityState.Modified:
                         entry.Entity.LastModifiedAt = DateTime.UtcNow;
-                        // TODO: Once an identity service is added
-                        // set the current Member id to LastModifiedByMemberId
+                        entry.Entity.LastModifiedByMemberId = _currentUserService.MemberId;
                         break;
                     case EntityState.Deleted:
                         if (entry.Entity is ISoftDeletable deletable)
@@ -52,8 +56,7 @@ namespace Codidact.Infrastructure.Application.Persistence
 
                             deletable.DeletedAt = DateTime.UtcNow;
                             deletable.IsDeleted = true;
-                            // TODO: Once an identity service is added
-                            // set the current Member id to DeletedByMemberId
+                            deletable.DeletedByMemberId = _currentUserService.MemberId;
                         }
                         break;
                 }

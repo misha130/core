@@ -1,6 +1,8 @@
 using Codidact.Application;
+using Codidact.Application.Common.Interfaces;
 using Codidact.Infrastructure;
-using Codidact.Infrastructure.Application.Persistence;
+using Codidact.Infrastructure.Persistence;
+using Codidact.WebUI.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -26,6 +28,31 @@ namespace Codidact.WebUI
         {
             services.AddApplication();
             services.AddInfrastructure(Configuration);
+
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
+
+            services.AddHttpContextAccessor();
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = "cookie";
+                options.DefaultSignInScheme = "cookie";
+                options.DefaultChallengeScheme = "oidc";
+            })
+             .AddCookie("cookie")
+             .AddOpenIdConnect("oidc", options =>
+             {
+                 options.Authority = "http://localhost:5000";
+                 options.RequireHttpsMetadata = false; // dev only
+                 options.ClientId = "codidact_client";
+                 options.ClientSecret = "acf2ec6fb01a4b698ba240c2b10a0243";
+                 options.ResponseType = "code";
+                 options.ResponseMode = "form_post";
+                 options.CallbackPath = "/signin-oidc";
+
+                 // Enable PKCE (authorization code flow only)
+                 options.UsePkce = true;
+             });
 
             services
                 .AddControllersWithViews()

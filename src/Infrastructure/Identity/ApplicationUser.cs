@@ -1,5 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 
 namespace Codidact.Infrastructure.Identity
 {
@@ -8,5 +7,6 @@ namespace Codidact.Infrastructure.Identity
     /// </summary>
     public class ApplicationUser : IdentityUser
     {
+        
     }
 }
