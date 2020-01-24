@@ -5,7 +5,7 @@ namespace Codidact.Application
     /// <summary>
     /// Dependency Injection module for the application
     /// </summary>
-    public static class ApplicationModule
+    public static class DependencyInjection
     {
         /// <summary>
         /// Adds all of the application services into the service collection
