@@ -1,10 +1,16 @@
 ﻿using Codidact.Infrastructure.Persistence;
 using Codidact.Infrastructure.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Logging;
+using Codidact.Auth.Services;
+using IdentityServer4.Services;
+using Codidact.Infrastructure;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
+using Codidact.Application;
+using Microsoft.AspNetCore.Identity;
 
 namespace Codidact.Auth
 {
@@ -20,46 +26,57 @@ namespace Codidact.Auth
         {
             services.AddMvc().SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_1);
 
+            services.AddHttpContextAccessor();
+
+            services.AddApplication();
+            services.AddInfrastructure(Configuration);
+
             services.AddDefaultIdentity<ApplicationUser>()
-                 .AddEntityFrameworkStores<ApplicationDbContext>();
+                    .AddEntityFrameworkStores<ApplicationDbContext>()
+                    .AddDefaultTokenProviders();
 
-            IdentityModelEventSource.ShowPII = true;
-
-            services.AddIdentityServer()
+            services.AddSingleton<IProfileService, CustomProfileService>();
+            var builder = services.AddIdentityServer(options =>
+            {
+                options.Events.RaiseErrorEvents = true;
+                options.Events.RaiseInformationEvents = true;
+                options.Events.RaiseFailureEvents = true;
+                options.Events.RaiseSuccessEvents = true;
+            })
                 .AddDeveloperSigningCredential()
                 .AddInMemoryClients(Configuration.GetSection("IdentityServer:Clients"))
                 .AddInMemoryIdentityResources(Config.GetIdentityResources())
                 .AddInMemoryApiResources(Configuration.GetSection("IdentityServer:ApiResources"))
                 // this adds the operational data from DB (codes, tokens, consents)
-                .AddOperationalStore(options =>
-                {
-                    options.ConfigureDbContext = builder =>
-                           builder.UseNpgsql(
-                           Configuration.GetConnectionString("DefaultConnection"),
-                           b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName));
+                .AddAspNetIdentity<ApplicationUser>()
+                .AddProfileService<CustomProfileService>()
+                ;
 
-                    // this enables automatic token cleanup. this is optional.
-                    options.EnableTokenCleanup = true;
-                    options.TokenCleanupInterval = 30;
-                });
+            services.AddAuthentication();
         }
 
-        public void Configure(IApplicationBuilder app)
+        public async void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
-            app.UseDeveloperExceptionPage();
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
 
             app.UseIdentityServer();
 
             app.UseStaticFiles();
             app.UseRouting();
+
             app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "Identity/{controller=Home}/{action=Index}/{id?}");
             });
 
+            await app.InitializeIdentityUsers();
         }
     }
 }

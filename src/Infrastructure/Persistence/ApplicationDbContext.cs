@@ -4,10 +4,8 @@ using Codidact.Domain.Common.Interfaces;
 using Codidact.Domain.Entities;
 using Codidact.Domain.Extensions;
 using Codidact.Infrastructure.Identity;
-using IdentityServer4.EntityFramework.Options;
-using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -16,15 +14,14 @@ using System.Threading.Tasks;
 
 namespace Codidact.Infrastructure.Persistence
 {
-    public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>, IApplicationDbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplicationDbContext
     {
         private readonly ICurrentUserService _currentUserService;
 
         public ApplicationDbContext(
-                DbContextOptions options,
-                IOptions<OperationalStoreOptions> operationalStoreOptions,
+                DbContextOptions<ApplicationDbContext> options,
                 ICurrentUserService currentUserService
-            ) : base(options, operationalStoreOptions)
+            ) : base(options)
         {
             _currentUserService = currentUserService;
         }
@@ -42,11 +39,11 @@ namespace Codidact.Infrastructure.Persistence
                 {
                     case EntityState.Added:
                         entry.Entity.CreateDateAt = DateTime.UtcNow;
-                        entry.Entity.CreatedByMemberId = _currentUserService.MemberId;
+                        entry.Entity.CreatedByMemberId = _currentUserService.GetMemberId();
                         break;
                     case EntityState.Modified:
                         entry.Entity.LastModifiedAt = DateTime.UtcNow;
-                        entry.Entity.LastModifiedByMemberId = _currentUserService.MemberId;
+                        entry.Entity.LastModifiedByMemberId = _currentUserService.GetMemberId();
                         break;
                     case EntityState.Deleted:
                         if (entry.Entity is ISoftDeletable deletable)
@@ -56,7 +53,7 @@ namespace Codidact.Infrastructure.Persistence
 
                             deletable.DeletedAt = DateTime.UtcNow;
                             deletable.IsDeleted = true;
-                            deletable.DeletedByMemberId = _currentUserService.MemberId;
+                            deletable.DeletedByMemberId = _currentUserService.GetMemberId();
                         }
                         break;
                 }

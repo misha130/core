@@ -229,3 +229,5 @@ _Pvt_Extensions
 
 # FAKE - F# Make
 .fake/
+identityserver4_log.txt
+tempkey.rsa

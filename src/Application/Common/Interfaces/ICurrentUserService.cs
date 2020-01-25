@@ -2,7 +2,7 @@
 {
     public interface ICurrentUserService
     {
-        public string UserId { get; }
-        public long MemberId { get; }
+        public string GetUserId();
+        public long GetMemberId();
     }
 }

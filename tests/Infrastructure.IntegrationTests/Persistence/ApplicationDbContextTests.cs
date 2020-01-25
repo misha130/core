@@ -3,9 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Codidact.Domain.Entities;
 using Codidact.Infrastructure.Persistence;
-using IdentityServer4.EntityFramework.Options;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Xunit;
 
 namespace Infrastructure.IntegrationTests.Persistence
@@ -19,13 +17,7 @@ namespace Infrastructure.IntegrationTests.Persistence
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
                 .UseInMemoryDatabase(Guid.NewGuid().ToString())
                 .Options;
-
-            var operationalStoreOptions = Options.Create(new OperationalStoreOptions
-            {
-                DeviceFlowCodes = new TableConfiguration("DeviceCodes"),
-                PersistedGrants = new TableConfiguration("PersistedGrants")
-            });
-            _sutContext = new ApplicationDbContext(options, operationalStoreOptions);
+            _sutContext = new ApplicationDbContext(options, new CurrentUserServiceMock());
         }
 
         [Fact]
