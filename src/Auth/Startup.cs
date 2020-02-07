@@ -75,7 +75,10 @@ namespace Codidact.Auth
                     pattern: "Identity/{controller=Home}/{action=Index}/{id?}");
             });
 
-            await app.InitializeIdentityData();
+            if (env.EnvironmentName != "Test")
+            {
+                await app.InitializeIdentityData();
+            }
         }
     }
 }
