@@ -32,7 +32,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.UnitTests", "te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "src\Api\Api.csproj", "{849DB31C-A5A3-4C44-8FF3-776C78B2708A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api.IntegrationTests", "Api.IntegrationTests\Api.IntegrationTests.csproj", "{B4187A55-8BAA-40FE-94E2-F11836B50CD0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api.IntegrationTests", "tests\Api.IntegrationTests\Api.IntegrationTests.csproj", "{B4187A55-8BAA-40FE-94E2-F11836B50CD0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

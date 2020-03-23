@@ -22,14 +22,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\Api\Api.csproj" />
-    <ProjectReference Include="..\src\Application\Application.csproj" />
+    <ProjectReference Include="..\..\src\Api\Api.csproj" />
+    <ProjectReference Include="..\..\src\Application\Application.csproj" />
   </ItemGroup>
 
 
   <ItemGroup>
-      <Protobuf Include="..\src\Api\Protos\member.proto" GrpcServices="Client" />
-      <Protobuf Include="..\src\Api\Protos\auth.proto" GrpcServices="Client" />
+      <Protobuf Include="..\..\src\Api\Protos\member.proto" GrpcServices="Client" />
+      <Protobuf Include="..\..\src\Api\Protos\auth.proto" GrpcServices="Client" />
 
   </ItemGroup>
 
