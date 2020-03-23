@@ -14,5 +14,7 @@ namespace Codidact.Core.Application.Members
         /// <param name="userId">The user id to search for</param>
         /// <returns>Member</returns>
         Task<Member> GetSingleByUserIdAsync(long userId);
+
+        Task<long> Create(Member member);
     }
 }

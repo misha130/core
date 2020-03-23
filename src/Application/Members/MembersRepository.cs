@@ -1,6 +1,7 @@
 ﻿using Codidact.Core.Application.Common.Interfaces;
 using Codidact.Core.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Codidact.Core.Application.Members
@@ -11,6 +12,15 @@ namespace Codidact.Core.Application.Members
         public MembersRepository(IApplicationDbContext context)
         {
             _context = context;
+        }
+
+        public async Task<long> Create(Member member)
+        {
+            _context.Members.Add(member);
+
+            await _context.SaveChangesAsync(CancellationToken.None);
+
+            return member.Id;
         }
 
         public async Task<Member> GetSingleByUserIdAsync(long userId)

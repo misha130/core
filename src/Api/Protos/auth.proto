@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+option csharp_namespace = "Codidact.Core.Api";
+
+package auth;
+
+// The Member service definition.
+service Auth {
+  // Creates a member
+  rpc AuthorizeClient (ClientAuthRequest) returns (AuthResponse);
+}
+
+// The request message containing the user's name.
+message ClientAuthRequest {
+  string client_id = 1;
+  string client_secret = 2;
+  
+}
+
+// The response message containing the greetings.
+message AuthResponse {
+  string token = 1;
+}
