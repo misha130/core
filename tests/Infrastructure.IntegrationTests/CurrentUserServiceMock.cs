@@ -4,7 +4,7 @@ namespace Codidact.Core.Infrastructure.IntegrationTests
 {
     public class CurrentUserServiceMock : ICurrentUserService
     {
-        public long GetMemberId()
+        public long? GetMemberId()
         {
             return 1;
         }

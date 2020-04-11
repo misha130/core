@@ -84,7 +84,9 @@ namespace Codidact.Core.Domain.Entities
         public bool IsTemporarilySuspended { get; set; }
         public DateTime? TemporarySuspensionEndAt { get; set; }
         public string TemporarySuspensionReason { get; set; }
-        public long TrustLevelId { get; set; }
+
+        // Trust Levels can't exist without members
+        public long? TrustLevelId { get; set; }
         public long? NetworkAccountId { get; set; }
         public bool IsModerator { get; set; }
         public bool IsAdministrator { get; set; }

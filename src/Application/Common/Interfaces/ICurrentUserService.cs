@@ -5,7 +5,7 @@
         /// <summary>
         /// Retreives the member id of the current user.
         /// </summary>
-        long GetMemberId();
+        long? GetMemberId();
 
         /// <summary>
         /// Retreives the user id of the current user.

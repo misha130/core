@@ -3,15 +3,17 @@ using System;
 using Codidact.Core.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Codidact.Core.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200410120320_MemberCreatedByIdRequire")]
+    partial class MemberCreatedByIdRequire
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -743,7 +745,7 @@ namespace Codidact.Core.Infrastructure.Persistence.Migrations
                         .HasColumnName("temporary_suspension_reason")
                         .HasColumnType("text");
 
-                    b.Property<long?>("TrustLevelId")
+                    b.Property<long>("TrustLevelId")
                         .HasColumnName("trust_level_id")
                         .HasColumnType("bigint");
 
@@ -3016,7 +3018,8 @@ namespace Codidact.Core.Infrastructure.Persistence.Migrations
                     b.HasOne("Codidact.Core.Domain.Entities.TrustLevel", "TrustLevel")
                         .WithMany("Member")
                         .HasForeignKey("TrustLevelId")
-                        .HasConstraintName("member_trust_level_fk");
+                        .HasConstraintName("member_trust_level_fk")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Codidact.Core.Domain.Entities.MemberHistory", b =>

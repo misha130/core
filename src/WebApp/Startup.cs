@@ -140,6 +140,31 @@ namespace Codidact.Core.WebApp
                 {
                     try
                     {
+                        Member communityMember;
+                        // members
+                        if (!context.Members.Any())
+                        {
+                            logger.LogDebug("Creating community member...");
+
+                            communityMember = new Member
+                            {
+                                DisplayName = "Codidact Community",
+                                Bio = "The codidact community manifested",
+                            };
+                            communityMember.CreatedByMember = communityMember;
+                            communityMember.LastModifiedByMember = communityMember;
+
+                            context.Members.Add(communityMember);
+                            context.SaveChanges();
+                        }
+                        else
+                        {
+                            communityMember = context.Members
+                                .OrderByDescending(member => member.CreatedAt)
+                                .FirstOrDefault();
+                        }
+
+
                         TrustLevel adminTrustLevel;
                         if (!context.TrustLevels.Any())
                         {
@@ -149,6 +174,8 @@ namespace Codidact.Core.WebApp
                             {
                                 DisplayName = "Instance Administrator",
                                 Explanation = "Administrator Level Trust",
+                                CreatedByMember = communityMember,
+                                LastModifiedByMember = communityMember
                             };
                             context.TrustLevels.Add(adminTrustLevel);
                             context.SaveChanges();
@@ -160,6 +187,14 @@ namespace Codidact.Core.WebApp
                                 .FirstOrDefault();
                         }
 
+                        // member trust lvl
+                        if (!communityMember.TrustLevelId.HasValue)
+                        {
+                            communityMember.TrustLevel = adminTrustLevel;
+                            context.Members.Update(communityMember);
+                            context.SaveChanges();
+                        }
+
                         Category category;
                         if (!context.Categories.Any())
                         {
@@ -168,39 +203,19 @@ namespace Codidact.Core.WebApp
                             category = new Category
                             {
                                 DisplayName = "main",
-                                ParticipationMinimumTrustLevelId = adminTrustLevel.Id,
+                                ParticipationMinimumTrustLevel = adminTrustLevel,
                                 ShortExplanation = "Codidact Questions",
-                                LongExplanation = "Main Category for Codidact where all the codidact related questions go to"
+                                LongExplanation = "Main Category for Codidact where all the codidact related questions go to",
+                                CreatedByMember = communityMember,
+                                LastModifiedByMember = communityMember
                             };
+
                             context.Categories.Add(category);
-                            context.SaveChanges();
                         }
                         else
                         {
                             category = context.Categories
                                 .OrderByDescending(category => category.CreatedAt)
-                                .FirstOrDefault();
-                        }
-
-                        Member communityMember;
-                        // members
-                        if (!context.Members.Any())
-                        {
-                            logger.LogDebug("Creating community member...");
-
-                            communityMember = new Member
-                            {
-                                DisplayName = "Codidact Community",
-                                Bio = "The codidact community manifested",
-                                TrustLevelId = adminTrustLevel.Id
-                            };
-                            context.Members.Add(communityMember);
-                            context.SaveChanges();
-                        }
-                        else
-                        {
-                            communityMember = context.Members
-                                .OrderByDescending(member => member.CreatedAt)
                                 .FirstOrDefault();
                         }
 
@@ -213,9 +228,11 @@ namespace Codidact.Core.WebApp
                             {
                                 Id = Domain.Enums.PostType.Question,
                                 DisplayName = "Question",
-                                Description = "A question"
+                                Description = "A question",
+                                CreatedByMember = communityMember,
+                                LastModifiedByMember = communityMember
                             });
-                            context.SaveChanges();
+
                         }
                         else
                         {
@@ -236,9 +253,9 @@ namespace Codidact.Core.WebApp
                                 PostTypeId = Domain.Enums.PostType.Question,
                                 Views = 53,
                                 CreatedAt = DateTime.UtcNow,
-                                CreatedByMemberId = communityMember.Id,
-                                MemberId = communityMember.Id,
-                                CategoryId = category.Id
+                                CreatedByMember = communityMember,
+                                Member = communityMember,
+                                Category = category
                             });
                             context.Posts.Add(new Post
                             {
@@ -247,10 +264,11 @@ namespace Codidact.Core.WebApp
                                 PostTypeId = Domain.Enums.PostType.Question,
                                 Views = 53,
                                 CreatedAt = DateTime.UtcNow,
-                                CreatedByMemberId = communityMember.Id,
-                                MemberId = communityMember.Id,
-                                CategoryId = category.Id
+                                CreatedByMember = communityMember,
+                                Member = communityMember,
+                                Category = category
                             });
+
                             context.SaveChanges();
                         }
                     }

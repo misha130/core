@@ -67,17 +67,30 @@ namespace Codidact.Core.Infrastructure.Persistence
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
+            var currentMemberId = _currentUserService.GetMemberId();
             foreach (var entry in ChangeTracker.Entries<AuditableEntity>())
             {
                 switch (entry.State)
                 {
                     case EntityState.Added:
                         entry.Entity.CreatedAt = DateTime.UtcNow;
-                        entry.Entity.CreatedByMemberId = _currentUserService.GetMemberId();
+                        if (currentMemberId.HasValue)
+                        {
+                            entry.Entity.CreatedByMemberId = currentMemberId.Value;
+                        }
+
+                        entry.Entity.LastModifiedAt = DateTime.UtcNow;
+                        if (currentMemberId.HasValue)
+                        {
+                            entry.Entity.LastModifiedByMemberId = currentMemberId.Value;
+                        }
                         break;
                     case EntityState.Modified:
                         entry.Entity.LastModifiedAt = DateTime.UtcNow;
-                        entry.Entity.LastModifiedByMemberId = _currentUserService.GetMemberId();
+                        if (currentMemberId.HasValue)
+                        {
+                            entry.Entity.LastModifiedByMemberId = currentMemberId.Value;
+                        }
                         break;
                     case EntityState.Deleted:
                         if (entry.Entity is ISoftDeletable deletable)
@@ -87,7 +100,10 @@ namespace Codidact.Core.Infrastructure.Persistence
 
                             deletable.DeletedAt = DateTime.UtcNow;
                             deletable.IsDeleted = true;
-                            deletable.DeletedByMemberId = _currentUserService.GetMemberId();
+                            if (currentMemberId.HasValue)
+                            {
+                                deletable.DeletedByMemberId = currentMemberId.Value;
+                            }
                         }
                         break;
                 }

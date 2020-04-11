@@ -91,14 +91,13 @@ namespace Codidact.Core.Infrastructure.IntegrationTests.Persistence
             _sutContext.Add(member);
             await _sutContext.SaveChangesAsync();
 
-            Assert.Null(member.LastModifiedAt);
+            Assert.Equal(member.CreatedAt, member.LastModifiedAt);
 
             member.DisplayName = "John Galt";
             _sutContext.Update(member);
             await _sutContext.SaveChangesAsync();
 
-            Assert.True(member.LastModifiedAt.HasValue);
-            Assert.Equal(member.LastModifiedAt.Value.Date, DateTime.UtcNow.Date);
+            Assert.Equal(member.LastModifiedAt.Date, DateTime.UtcNow.Date);
         }
 
         [Fact]

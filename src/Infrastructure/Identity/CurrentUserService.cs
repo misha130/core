@@ -33,17 +33,17 @@ namespace Codidact.Core.Infrastructure.Identity
         /// <summary>
         /// Retreives the member id of the current user.
         /// </summary>
-        public long GetMemberId()
+        public long? GetMemberId()
         {
             var claimsIdentity = _httpContextAccessor.HttpContext.User.Claims as ClaimsIdentity;
             Claim memberClaim = _httpContextAccessor.HttpContext?.User.Claims.FirstOrDefault(claim => claim.Type == "codidact_member_id");
-            if (!string.IsNullOrEmpty(memberClaim.Value))
+            if (!string.IsNullOrEmpty(memberClaim?.Value))
             {
                 return long.Parse(memberClaim.Value);
             }
             else
             {
-                throw new Exception("Claim for memberId is missing in token");
+                return null;
             }
         }
     }
