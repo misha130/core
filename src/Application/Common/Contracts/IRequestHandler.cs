@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using Codidact.Core.Domain.Common;
 
 namespace Codidact.Core.Application.Common.Contracts
 {
@@ -29,6 +31,6 @@ namespace Codidact.Core.Application.Common.Contracts
         /// Handles a request
         /// </summary>
         /// <param name="message">The request message</param>
-        Task Handle(TRequest message);
+        Task<EntityResult> Handle(TRequest message, CancellationToken cancellationToken);
     }
 }

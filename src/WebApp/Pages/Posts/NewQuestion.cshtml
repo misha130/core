@@ -1,0 +1,35 @@
+﻿@page "/{category}/questions/new"
+@using  Microsoft.AspNetCore.Mvc.Localization
+@inject IStringLocalizer<NewQuestionModel> localizer
+@inject IHtmlLocalizer<NewQuestionModel> htmlLocalizer
+@model Codidact.Core.WebApp.Pages.Posts.NewQuestionModel
+
+<partial name="_ValidationSummary" />
+<div class="grid">
+    <div class="grid--cell is-9 is-12-sm">
+        <form method="post">
+            <div class="has-border-width-1 has-border-style-solid has-padding-4 has-border-color-tertiary-050">
+                <h3>@localizer["Body_input"]</h3>
+                <div class="form-caption">@localizer["Body_input_caption"]</div>
+                <textarea name="body" class="form-element is-large"></textarea>
+
+                <h3>@localizer["Title_input"]</h3>
+                <div class="form-caption">@localizer["Title_input_caption"]</div>
+                <input name="title" class="form-element">
+
+                @*<h3>@localizer["Tags_input"]</h3>
+                <div class="form-caption">@localizer["Tags_input_caption"]</div>*@
+                <input class="form-element">
+                <div class="button-list has-padding-4">
+                    <button class="button is-very-large">@localizer["Preview_button"]</button>
+                    <button type="submit" class="button is-filled is-very-large">@localizer["Post_button"]</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="grid--cell is-3 is-hidden-sm">
+        <div class="has-border-width-1 has-border-style-solid has-padding-4 has-border-color-tertiary-050">
+            @htmlLocalizer["Question_Instructions"]
+        </div>
+    </div>
+</div>

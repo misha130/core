@@ -27,7 +27,7 @@ namespace Codidact.Core.Application.IntegrationTests.Questions
             await SetupQuestions()
                 .ConfigureAwait(false);
 
-            var result = await _questionsQuery.Handle(new QuestionsQueryRequest { Category = "main" });
+            var result = await _questionsQuery.Handle(new QuestionsQueryRequest { Category = "Main" });
 
             Assert.NotNull(result.Items);
             Assert.True(result.Items.Any());
